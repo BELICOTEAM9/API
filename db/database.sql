@@ -1,19 +1,19 @@
-CREATE DATABASE ActFinal;
+CREATE DATABASE mysql;
 
-USE ActFinal;
+USE mysql;
 
-DROP TABLE IF EXISTS `USER`;
-CREATE TABLE `ActFinal`.`USER` (
+DROP TABLE IF EXISTS `Usuario`;
+CREATE TABLE `mysql`.`Usuarios` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(40) NOT NULL,
   `email` VARCHAR(40) NOT NULL UNIQUE,
   PRIMARY KEY (`id`));
 
-  INSERT INTO user VALUES
+  INSERT INTO Usuarios VALUES
 (1, "Erick", "Erick@hotmail.com");
 
-SELECT * FROM user
+SELECT * FROM Usuarios
 
-SELECT * FROM user WHERE id = 1;
+SELECT * FROM Usuarios WHERE id = 1;
 
-DELETE FROM user WHERE id = 2;
+DELETE FROM Usuarios WHERE id = 2;
