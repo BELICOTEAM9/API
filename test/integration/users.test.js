@@ -24,24 +24,14 @@ describe('Pruebas de integración del servidor Express', () => {
   });
 
   test('Crear un nuevo usuario', async () => {
-    // Genera un UUID único para el usuario
-    const userId = uuidv4();
-  
-    const newUser = { id: userId, name: 'Jhon', email: 'jhon@example.com' };
-  
-    // Verifica si el correo electrónico ya está en uso
-    try {
-      const existingUser = await User.findOne({ email: newUser.email });
-      if (existingUser) {
-        console.log('El correo electrónico ya está en uso. No se pudo crear un nuevo usuario.');
-        return;
-      }
-  
-      // Aquí continúa el código para crear el nuevo usuario y hacer las aserciones
-    } catch (error) {
-     // console.error('Error al verificar el correo electrónico:', error);
-    }
+    const newUser = { name: 'Jhon', email: 'jhon@example.com' };
+    const response = await request.post('/users').send(newUser);
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toHaveProperty('id');
+    console.log('POST /users - Estado:', response.statusCode);
   });
+  
+
 
   // Prueba para actualizar un usuario existente
   test('Actualizar un usuario existente', async () => {
@@ -63,7 +53,7 @@ const simulateDeleteUser = async (userId) => {
 
   // Prueba para eliminar un usuario existente
   test('Eliminar un usuario existente', async () => {
-    const userId = 3;
+    const userId = 6;
     const response = await request.delete(`/users/${userId}`);
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('message', 'Usuario eliminado exitosamente');
