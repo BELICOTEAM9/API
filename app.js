@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const { Pool } = require('pg');
 const { exec } = require('child_process');
 
+
 // Crear una instancia de la aplicación Express
 const app = express();
 const PORT = 3000;
@@ -87,6 +88,13 @@ app.post('/users', async (req, res) => {
       return;
     }
 
+    // Verificar si el correo electrónico ya está en uso
+    const existingUser = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (existingUser.rows.length > 0) {
+      res.status(409).json({ error: 'El correo electrónico ya está en uso' });
+      return;
+    }
+
     const { rows } = await pool.query('INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *', [name, email]);
     res.status(201).json({ message: 'Usuario creado exitosamente', id: rows[0].id });
   } catch (error) {
@@ -94,6 +102,7 @@ app.post('/users', async (req, res) => {
     res.status(500).json({ error: 'Error al crear usuario' });
   }
 });
+
 
 // Endpoint para eliminar usuario por ID
 app.delete('/users/:id', async (req, res) => {

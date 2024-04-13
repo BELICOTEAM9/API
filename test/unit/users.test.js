@@ -1,55 +1,38 @@
-// Importar los módulos necesarios
-const { getUsers, getUserById } = require('../../models/userModel');
+const UserModel = require('../../models/userModel');
 
-// Mockear las funciones getUsers y getUserById
-jest.mock('../../models/userModel');
+describe('UserModel', () => {
+  let userModel;
+  let mockDataAccessLayer;
 
-describe('Users API', () => {
-  // Prueba para [GET] /users
-  it('[GET] /users', async () => {
-    // Definir los usuarios simulados para la prueba
-    const mockUsers = [{ id: 1, name: 'User 1' }, { id: 2, name: 'User 2' }];
-    
-    // Mockear la respuesta de la función getUsers
-    getUsers.mockResolvedValue(mockUsers);
-
-    // Simular una solicitud GET a /users
-    const req = {};
-    const res = {
-      json: jest.fn(),
-      status: jest.fn()
+  beforeEach(() => {
+    // Crear un mock para la capa de acceso a datos
+    mockDataAccessLayer = {
+      getUsers: jest.fn(),
+      getUserById: jest.fn(),
     };
 
-    // Ejecutar la función getUsers con la solicitud y la respuesta simuladas
-    await getUsers(req, res);
-
-    // Verificar que getUsers haya sido llamado
-    expect(getUsers).toHaveBeenCalled();
-    // Verificar que la respuesta JSON coincida con los usuarios simulados
-    expect(res.json).toHaveBeenCalledWith(mockUsers);
+    userModel = new UserModel(mockDataAccessLayer);
   });
 
-  // Prueba para [GET] /users/:id
-  it('[GET] /users/:id', async () => {
-    // Definir el usuario simulado para la prueba
+  test('getUsers should return users', async () => {
+    // Simular respuesta de la capa de acceso a datos
+    mockDataAccessLayer.getUsers.mockResolvedValue([{ id: 1, name: 'User 1' }, { id: 2, name: 'User 2' }]);
+
+    const users = await userModel.getUsers();
+    expect(users).toEqual(expect.arrayContaining([expect.objectContaining({ id: expect.any(Number), name: expect.any(String) })]));
+  });
+
+  test('getUserById should return user with specified ID', async () => {
+    // Simular respuesta de la capa de acceso a datos
     const mockUser = { id: 1, name: 'User 1' };
-    
-    // Mockear la respuesta de la función getUserById
-    getUserById.mockResolvedValue(mockUser);
+    mockDataAccessLayer.getUserById.mockResolvedValue(mockUser);
 
-    // Simular una solicitud GET a /users/:id con ID = 1
-    const req = { params: { id: 1 } };
-    const res = {
-      json: jest.fn(),
-      status: jest.fn()
-    };
+    const user = await userModel.getUserById(1);
+    expect(user).toEqual(expect.objectContaining({ id: expect.any(Number), name: expect.any(String) }));
+  });
 
-    // Ejecutar la función getUserById con la solicitud y la respuesta simuladas
-    await getUserById(req, res);
-
-    // Verificar que getUserById haya sido llamado con el ID correcto
-    expect(getUserById).toHaveBeenCalledWith(1);
-    // Verificar que la respuesta JSON coincida con el usuario simulado
-    expect(res.json).toHaveBeenCalledWith(mockUser);
+  afterEach(() => {
+    // Limpiar mocks después de cada prueba
+    jest.clearAllMocks();
   });
 });
