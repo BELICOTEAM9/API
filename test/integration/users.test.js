@@ -39,7 +39,7 @@ describe('Pruebas de integración del servidor Express', () => {
   
       // Aquí continúa el código para crear el nuevo usuario y hacer las aserciones
     } catch (error) {
-      console.error('Error al verificar el correo electrónico:', error);
+     // console.error('Error al verificar el correo electrónico:', error);
     }
   });
 
@@ -63,7 +63,7 @@ const simulateDeleteUser = async (userId) => {
 
   // Prueba para eliminar un usuario existente
   test('Eliminar un usuario existente', async () => {
-    const userId = 10;
+    const userId = 3;
     const response = await request.delete(`/users/${userId}`);
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('message', 'Usuario eliminado exitosamente');
