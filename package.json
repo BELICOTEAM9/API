@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "API para mi aplicación",
   "scripts": {
-    "test": "jest"
+    "test": "jest --verbose"
   },
   "dependencies": {
     "express": "^4.17.1",
